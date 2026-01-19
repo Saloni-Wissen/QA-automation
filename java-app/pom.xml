@@ -26,6 +26,47 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
       </plugin>
+
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.11</version>
+
+        <executions>
+          <!-- Attach agent -->
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>java/**</exclude>
+                <exclude>javax/**</exclude>
+                <exclude>sun/**</exclude>
+                <exclude>jdk/**</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+
+          <!-- Generate report -->
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <formats>
+                <format>XML</format>
+                <format>HTML</format>
+              </formats>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
     </plugins>
   </build>
 </project>

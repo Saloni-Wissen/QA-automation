@@ -6,15 +6,29 @@ load_dotenv()
 llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0)
 
 def test_generator_agent(state):
+    uncovered = state.get("uncovered_lines", [])
+
+    coverage_hint = ""
+    if uncovered:
+        coverage_hint = f"""
+        The following lines are NOT covered by tests:
+        {chr(10).join(uncovered)}
+
+        Generate additional JUnit tests that specifically execute these lines.
+        """
+
     prompt = f"""
-    Given the following Java class, generate a JUnit 5 test class.
+    You are a senior Java QA engineer.
+
+    Generate a JUnit 5 test class for the following Java code.
 
     Requirements:
-    - Use @Test
-    - Test positive numbers
-    - Test negative numbers
-    - Test zero
-    - Class name: CalculatorTest
+    - Package: com.example.math
+    - Use org.junit.jupiter.api.Test
+    - Use assertions from org.junit.jupiter.api.Assertions
+    - Tests must be deterministic
+
+    {coverage_hint}
 
     Java code:
     {state['java_code']}
@@ -22,3 +36,4 @@ def test_generator_agent(state):
 
     response = llm.invoke(prompt)
     return {"generated_test": response.content}
+
